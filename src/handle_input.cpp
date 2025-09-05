@@ -1,7 +1,6 @@
 #include "../include/handle_input.hpp"
 #include <vector>
 #include <cstddef>
-#include <iostream>
 
 #define SIZE 100
 
@@ -15,16 +14,16 @@ std::vector<int> *create_input(void) {
     return input_ptr;
 }
 
-std::vector<int> *resize_input(std::vector<int> *input) {
-    int size = input->size();
+std::vector<int> *resize_input(std::vector<int> &input) {
+    int size = input.size();
     int max_size = size * 2;
 
 
     for (; size < max_size; ++size) {
-        input->push_back(size);
+        input.push_back(size);
     } 
 
-    return input;
+    return &input;
 }
 
 
