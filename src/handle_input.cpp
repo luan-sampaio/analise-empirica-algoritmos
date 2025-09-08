@@ -2,7 +2,7 @@
 #include <vector>
 #include <cstddef>
 
-#define SIZE 100
+#define SIZE 1000
 
 std::vector<int> *create_input(void) {
     std::vector<int>* input_ptr = new std::vector<int>();
@@ -16,8 +16,7 @@ std::vector<int> *create_input(void) {
 
 std::vector<int> *resize_input(std::vector<int> &input) {
     int size = input.size();
-    int max_size = size * 2;
-
+    int max_size = size + 200;
 
     for (; size < max_size; ++size) {
         input.push_back(size);
