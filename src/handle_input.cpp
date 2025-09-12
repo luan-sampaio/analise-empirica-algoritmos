@@ -6,21 +6,19 @@
 #define SIZE 100
 
 void show_usage() {
-    
-    // Display program information and usage instructions
     std::cout << "Bem vindo ao alg_analyzer cpp, version 1.0, (c) IMD/UFRN.\n\n";
     std::cout << "NOME\n";
-    std::cout << "  alg_analyzer - Analizador de algoritmos\n\n";
+    std::cout << "  alg_analyzer - Analisador de algoritmos\n\n";
     std::cout << "DESCRIÇÃO\n";
-    std::cout << "  Sloc counts the individual number **lines of code** (LOC), comments, and blank\n";
-    std::cout << "  lines found in a list of files or directories passed as the last argument\n";
-    std::cout << "  (after options).\n";
-    std::cout << "  After the counting process is concluded the program prints out to the standard\n";
-    std::cout << "  output a table summarizing the information gathered, by each source file and/or\n";
-    std::cout << "  directory provided.\n";
-    std::cout << "  It is possible to inform which fields sloc should use to sort the data by, as\n";
-    std::cout << "  well as if the data should be presented in ascending/descending numeric order.\n\n";
-    std::cout << "Clique enter para inicias os cálculos:\n";
+    std::cout << "  O analizador de algoritmos é um programa que avaliará empiricamente o tempo de execução\n";
+    std::cout << "  de execução dos seguintes algoritmos:\n\n";
+    std::cout << "  - Busca linear, algoritmo_1, algoritmo_2 e algoritmo_3.\n\n";
+    std::cout << "  Assim, o programa coletará o tempo de cada algoritmo e fará a comparação nas seguintes funções teóricas:\n\n";
+    std::cout << "  O(n), O(log(n)), O(n.log(n)), O(n²) e O(n³).\n\n";
+    std::cout << "  Dessa forma, o programa entrega a função assintótica que mais se aproxima do desempenho\n";
+    std::cout << "  do algoritmo calculado, além de exportar um arquivo CSV com os dados reais calculado e \n";
+    std::cout << "  das funções teóricas, assim poderemos plotar nos gráficos para visualizar os cálculos\n";
+    std::cout << "[ Clique enter para inicias os cálculos ]\n";
     std::string command = "";
     getline(std::cin, command);
 }
