@@ -14,11 +14,11 @@ void show_usage() {
     std::cout << "  de execução dos seguintes algoritmos:\n\n";
     std::cout << "  - Busca linear, algoritmo_1, algoritmo_2 e algoritmo_3.\n\n";
     std::cout << "  Assim, o programa coletará o tempo de cada algoritmo e fará a comparação nas seguintes funções teóricas:\n\n";
-    std::cout << "  O(n), O(log(n)), O(n.log(n)), O(n²) e O(n³).\n\n";
+    std::cout << "  - O(n), O(log(n)), O(n.log(n)), O(n²) e O(n³).\n\n";
     std::cout << "  Dessa forma, o programa entrega a função assintótica que mais se aproxima do desempenho\n";
     std::cout << "  do algoritmo calculado, além de exportar um arquivo CSV com os dados reais calculado e \n";
-    std::cout << "  das funções teóricas, assim poderemos plotar nos gráficos para visualizar os cálculos\n";
-    std::cout << "[ Clique enter para inicias os cálculos ]\n";
+    std::cout << "  das funções teóricas, assim poderemos plotar nos gráficos para visualizar os cálculos\n\n";
+    std::cout << "[ Clique enter para iniciar os cálculos ]\n";
     std::string command = "";
     getline(std::cin, command);
 }
