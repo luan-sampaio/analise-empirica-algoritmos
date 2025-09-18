@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <iostream>
 
-#define SIZE 100
+#define SIZE 1000
 
 void show_usage() {
     std::cout << "Bem vindo ao alg_analyzer cpp, version 1.0, (c) IMD/UFRN.\n\n";
@@ -35,7 +35,7 @@ std::vector<int> *create_input(void) {
 
 std::vector<int> *resize_input(std::vector<int> &input) {
     int size = input.size();
-    int max_size = size + 200;
+    int max_size = size + 1000;
 
     for (; size < max_size; ++size) {
         input.push_back(size);

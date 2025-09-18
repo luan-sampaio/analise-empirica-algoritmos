@@ -16,7 +16,7 @@
 #include <cmath>
 
 #define MEDIA 30
-#define MAX 2000
+#define MAX 20000
 
 void quickSortWrapper(std::vector<int>& vec) {
     if (!vec.empty()) {
@@ -43,14 +43,14 @@ void Calculate_time::run_search_experiment(const std::string& alg_name,
     int temp_size = temp_ptr->size();
     while (temp_size < MAX) {
         media_map.insert({temp_size, 0});
-        temp_size += 200; // Salto de entrada
+        temp_size += 1000; // Salto de entrada
     }
     delete temp_ptr; // Libera memória
 
     for (int idx{ 0 }; idx < MEDIA; ++idx) {
         std::vector<int>* input_ptr = create_input();
 
-        while (input_ptr->size() < MAX) {
+        while (input_ptr->size() <= MAX) {
             int random = random_number(input_ptr);
     
             const auto start{std::chrono::steady_clock::now()};
