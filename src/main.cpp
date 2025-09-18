@@ -8,7 +8,9 @@ int main(int argc, char *argv[]) {
     std::unordered_map<int, float> media_algorithm;
 
     Calculate_time time;
-    time.calculate_time_linear(input_ptr);
+    //
+    // time.calculate_time_linear(input_ptr, &linear_search, );
+    time.calculate_all(input_ptr);
     
     delete input_ptr;
 
