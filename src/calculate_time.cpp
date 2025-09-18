@@ -10,6 +10,7 @@
 #include <random>
 #include <algorithm>
 #include <vector>
+#include <cmath>
 
 #define MEDIA 30
 #define MAX 2000
@@ -59,6 +60,7 @@ void Calculate_time::calculate_time_linear(std::vector<int> *input_ptr,
     }
 
     calculate_O_n();
+    calculate_O_n2();
     test_csv(media_linear_search);
 }
 
@@ -70,16 +72,56 @@ void Calculate_time::test_csv(std::unordered_map<int , float> map) {
     std::ofstream myfile ("linear.CSV");
     if (myfile.is_open()) {
         for (auto element : linear_vec) {
-            myfile << element.entry << "," << element.real_time << "," << element.n_time << '\n';
+            myfile << element.entry << "," << element.real_time << "," << element.n_time << 
+            "," << element.n2_time << '\n';
         }
     }
 }
 
 // deixar generico
 void Calculate_time::calculate_O_n() {
-    float constant = linear_vec.back().real_time / linear_vec.back().entry;
+    float numerator = 0;
+    float denominator = 0;
+
+    for (auto element : linear_vec) {
+        float fn = element.entry;
+        numerator += fn * element.real_time;
+        denominator += fn * fn;
+    }
+
+    float constant = numerator / denominator;
+    //float constant = linear_vec.back().real_time / linear_vec.back().entry;
 
     for (size_t idx{ 0 }; idx < linear_vec.size(); ++idx) {
         linear_vec[idx].n_time = linear_vec[idx].entry * constant;
     }
 } 
+
+void Calculate_time::calculate_O_n2() {
+    float numerator = 0;
+    float denominator = 0;
+
+    for (auto element : linear_vec) {
+        float fn = element.entry * element.entry;
+        numerator += fn * element.real_time;
+        denominator += fn * fn;
+    }
+
+    float constant = numerator / denominator;
+    //float constant = linear_vec.back().real_time / pow(linear_vec.back().entry, 2);
+
+    for (size_t idx{ 0 }; idx < linear_vec.size(); ++idx) {
+        linear_vec[idx].n2_time = pow(linear_vec[idx].entry, 2) * constant;
+        //linear_vec[idx].n_time = linear_vec[idx].entry * constant;
+    }
+}
+
+/*     float numerator = 0.0f, denominator = 0.0f;
+
+    for (auto &elem : linear_vec) {
+        float fn = f(elem.entry);
+        numerator += fn * elem.real_time;z
+        denominator += fn * fn;
+    }
+
+    float constant = numerator / denominator; */

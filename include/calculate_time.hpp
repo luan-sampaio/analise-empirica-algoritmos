@@ -7,7 +7,7 @@
 struct Data_algorithm {
     int entry;
     int real_time;
-    float n_time;
+    int n_time;
     int n2_time;
 };
 
@@ -20,6 +20,7 @@ class Calculate_time {
         std::unordered_map<int, float> *initialize_map(std::vector<int> *input_ptr);
         void test_csv(std::unordered_map<int , float> map);
         void calculate_O_n();
+        void calculate_O_n2();
 
     private:
         std::unordered_map<int, float> media_linear_search;
