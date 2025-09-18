@@ -3,6 +3,5 @@
 
 #include <vector>
 
-int linear_search(std::vector<int> &input, int value);
-
+int linear_search(const std::vector<int> &input, int value); 
 #endif
