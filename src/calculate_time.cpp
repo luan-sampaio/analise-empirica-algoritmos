@@ -41,7 +41,6 @@ void Calculate_time::run_search_experiment(const std::string& alg_name,
     int (*func_ptr)(const std::vector<int>&, int),
     std::vector<Data_algorithm> &vec_alg,
     std::unordered_map<int, float> &media_map) {         
-
     media_map.clear();
     vec_alg.clear();
 
@@ -53,32 +52,36 @@ void Calculate_time::run_search_experiment(const std::string& alg_name,
     }
     delete temp_ptr; 
 
+    // Gerador de números aleatórios para usar dentro do laço
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
     for (int idx{ 0 }; idx < MEDIA; ++idx) {
         std::vector<int>* input_ptr = create_input();
-
-        while (input_ptr->size() < MAX) { // Use '<' para consistência
-            int random = random_number(input_ptr);
-            long long nanoseconds = 0; // Variável para guardar o tempo
-
-            // --- LÓGICA CONDICIONAL ADICIONADA AQUI ---
+        while (input_ptr->size() < MAX) {
+            long long nanoseconds = 0; 
+            
             if (alg_name == "binary_search") {
-                // Para a busca binária (muito rápida), amplificamos o sinal
                 const int REPETICOES_INTERNAS = 10000;
+                // Distribuição para gerar números DENTRO do intervalo do vetor
+                std::uniform_int_distribution<> distrib(0, input_ptr->size() - 1);
+
                 const auto start{std::chrono::steady_clock::now()};
                 for (int i = 0; i < REPETICOES_INTERNAS; ++i) {
-                    func_ptr(*input_ptr, random);
+                    // Gera um novo alvo aleatório A CADA iteração
+                    int random_target = distrib(gen);
+                    func_ptr(*input_ptr, random_target);
                 }
                 const auto finish{std::chrono::steady_clock::now()};
                 auto total_nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count();
                 nanoseconds = total_nanoseconds / REPETICOES_INTERNAS;
-            } else {
-                // Para outros algoritmos de busca (como a linear), uma única medição é suficiente
+            } else { // Para linear_search
+                int random_target = random_number(input_ptr); // Pode manter o alvo fixo, não afeta tanto
                 const auto start{std::chrono::steady_clock::now()};
-                func_ptr(*input_ptr, random);  
+                func_ptr(*input_ptr, random_target);  
                 const auto finish{std::chrono::steady_clock::now()};
                 nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count();
             }
-            // --- FIM DA LÓGICA CONDICIONAL ---
     
             media_map[input_ptr->size()] += nanoseconds;
             resize_input(*input_ptr); 
@@ -86,23 +89,20 @@ void Calculate_time::run_search_experiment(const std::string& alg_name,
         delete input_ptr; 
     }
     
-    // O resto da função continua igual...
     for (auto const& [size, total_time] : media_map) {
         Data_algorithm temp;
         temp.entry = size;
         temp.real_time = total_time / MEDIA;
         vec_alg.push_back(temp);        
     }
-    std::sort(vec_alg.begin(), vec_alg.end(), [](const Data_algorithm& a, const Data_algorithm& b){
-        return a.entry < b.entry;
-    });
-
+    std::sort(vec_alg.begin(), vec_alg.end(), [](const Data_algorithm& a, const Data_algorithm& b) {
+    return a.entry < b.entry;
+});
     std::string best_fit = find_best_fit_mse(vec_alg);
     std::cout << "-> Para o algoritmo '" << alg_name << "', a curva de melhor ajuste é: " << best_fit << std::endl;
 
     save_to_csv(alg_name + ".csv", vec_alg);
 }
-// Adicione esta implementação em calculate_time.cpp
 
 void Calculate_time::run_sort_experiment(const std::string& alg_name,
                                         void (*func_ptr)(std::vector<int>&), 
@@ -123,7 +123,7 @@ void Calculate_time::run_sort_experiment(const std::string& alg_name,
         std::vector<int>* input_ptr = create_input();
         while (input_ptr->size() < MAX) {
             
-            // IMPORTANTE: Embaralha o vetor para testar o caso médio
+            //Embaralha o vetor para testar o caso médio
             std::random_device rd;
             std::mt19937 g(rd());
             std::shuffle(input_ptr->begin(), input_ptr->end(), g);
@@ -178,15 +178,19 @@ std::string Calculate_time::find_best_fit_mse(std::vector<Data_algorithm>& vec_a
     }
 
     std::map<std::string, double> mse_results;
-
+    
     std::map<std::string, std::function<double(double)>> theoretical_funcs = {
+        {"O(log n)", [](double n){ return n <= 1 ? 0 : std::log2(n); }}, 
         {"O(n)", [](double n){ return n; }},
         {"O(n log n)", [](double n){ return n <= 1 ? 0 : n * std::log2(n); }},
         {"O(n^2)", [](double n){ return n * n; }},
         {"O(n^3)", [](double n){ return n * n * n; }}
     };
 
-    for (auto const& [name, func] : theoretical_funcs) {
+    for (auto const& pair : theoretical_funcs) {
+        const std::string& name = pair.first;
+        const auto& func = pair.second;
+        
         std::vector<double> theoretical_w;
         double max_w = 0.0;
         
@@ -200,23 +204,21 @@ std::string Calculate_time::find_best_fit_mse(std::vector<Data_algorithm>& vec_a
         double sum_squared_error = 0.0;
         if (max_w > 0) {
             for (size_t i = 0; i < vec_alg.size(); ++i) {
-            
                 double wi_norm = theoretical_w[i] / max_w;
 
-                // Salva o valor normalizado na struct para o CSV
+                if (name == "O(log n)") vec_alg[i].theoretical_log_n_norm = wi_norm;
                 if (name == "O(n)") vec_alg[i].theoretical_n_norm = wi_norm;
                 if (name == "O(n log n)") vec_alg[i].theoretical_n_log_n_norm = wi_norm;
                 if (name == "O(n^2)") vec_alg[i].theoretical_n2_norm = wi_norm;
                 if (name == "O(n^3)") vec_alg[i].theoretical_n3_norm = wi_norm;
                 
-                // Calcula o erro quadrático com os valores normalizados
                 double error = vec_alg[i].real_time_norm - wi_norm;
                 sum_squared_error += error * error;
             }
         }
-        
         mse_results[name] = sum_squared_error / vec_alg.size();
     }
+
     std::string best_fit = "N/A";
     double min_mse = std::numeric_limits<double>::max();
     for (auto const& [name, mse] : mse_results) {
@@ -228,17 +230,17 @@ std::string Calculate_time::find_best_fit_mse(std::vector<Data_algorithm>& vec_a
     
     return best_fit;
 }
-
 void Calculate_time::save_to_csv(const std::string& filename, const std::vector<Data_algorithm>& vec_alg) {
     std::ofstream myfile(filename);
     if (myfile.is_open()) {
-        myfile << "Tamanho,Tempo_Real_Norm,O(n)_Norm,O(nlogn)_Norm,O(n^2)_Norm,O(n^3)_Norm\n";
+        myfile << "Tamanho,Tempo_Real_Norm,O(logn)_Norm,O(n)_Norm,O(nlogn)_Norm,O(n^2)_Norm,O(n^3)_Norm\n";
         
         myfile << std::fixed << std::setprecision(6);
 
         for (const auto& element : vec_alg) {
             myfile << element.entry << ","
-                   << element.real_time_norm << "," 
+                   << element.real_time_norm << ","
+                   << element.theoretical_log_n_norm << "," 
                    << element.theoretical_n_norm << ","
                    << element.theoretical_n_log_n_norm << ","
                    << element.theoretical_n2_norm << ","

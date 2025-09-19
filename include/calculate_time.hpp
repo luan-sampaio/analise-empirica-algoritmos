@@ -8,7 +8,8 @@
 struct Data_algorithm {
     int entry;
     float real_time;
-    float real_time_norm;       
+    float real_time_norm;
+    float theoretical_log_n_norm; 
     float theoretical_n_norm;
     float theoretical_n_log_n_norm;
     float theoretical_n2_norm;
