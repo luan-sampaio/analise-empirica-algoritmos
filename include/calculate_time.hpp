@@ -7,12 +7,12 @@
 
 struct Data_algorithm {
     int entry;
-    int real_time;
-    float n_time;
-    float log_n_time;
-    float n_log_n_time;
-    float n2_time;
-    float n3_time;
+    float real_time;
+    float real_time_norm;       
+    float theoretical_n_norm;
+    float theoretical_n_log_n_norm;
+    float theoretical_n2_norm;
+    float theoretical_n3_norm;
 };
 
 class Calculate_time {
@@ -32,7 +32,7 @@ class Calculate_time {
 );
         int random_number(std::vector<int> *input_ptr);
         std::unordered_map<int, float> *initialize_map(std::vector<int> *input_ptr);
-        void calculate_all_theoretical(std::vector<Data_algorithm> &vec_alg);
+        std::string find_best_fit_mse(std::vector<Data_algorithm>& vec_alg);
         void save_to_csv(const std::string& filename, const std::vector<Data_algorithm>& vec_alg);
     
     private:
