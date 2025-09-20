@@ -13,6 +13,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic")
 
 #=== Main App ===
 set( APP_NAME "alg_analyzer" )
-add_executable( ${APP_NAME} "src/main.cpp"  )
+add_executable( ${APP_NAME} "src/main.cpp"  "src/handle_input.cpp" "src/linear_search.cpp"
+                            "src/calculate_time.cpp" "src/binary_search.cpp" "src/insertion_sort.cpp" "src/quick_sort.cpp")
 target_include_directories( ${APP_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/lib )
 target_compile_features( ${APP_NAME}  PUBLIC cxx_std_17 )

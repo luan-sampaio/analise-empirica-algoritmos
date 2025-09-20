@@ -1,7 +1,15 @@
-#include <iostream>
+#include "../include/handle_input.hpp"
+#include "../include/calculate_time.hpp"
 
-int main(void) {
-    std::cout << "Hello World!\n";
+#include <vector>
+int main(int argc, char *argv[]) {
+    show_usage();
+    std::vector<int> *input_ptr = create_input();
+
+    Calculate_time time;
+    time.calculate_all(input_ptr);
+    
+    delete input_ptr;
 
     return 0;
 }
